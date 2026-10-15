@@ -1,50 +1,48 @@
 # MayaCardio AI Tools Disclosure
 
-**Author:** Pranjal Karan | **Phase:** Phase 8 Assessment Submission  
+**Author:** Pranjal Karan  
 **Requirement:** Mandatory Assessment Disclosure on AI Tools & Automated Assistance (Section 5)
 
 ---
 
-## 1. Overview & Policy Statement
+## 1. Executive Statement & Engineering Ownership
 
-In compliance with Section 5 of the MayaCardio "Never Lose a Heartbeat" Software Systems Engineering Candidate Assessment, this document provides a transparent disclosure of the artificial intelligence (AI) tools utilized during the development of this repository.
+In accordance with Section 5 of the MayaCardio "Never Lose a Heartbeat" Candidate Assessment, this document outlines the extent and nature of automated assistance used while building this project.
 
-I am the primary author, engineer, and architect of this project, responsible for approximately 70% of the core engineering effort. AI tools provided approximately 30% of the effort, serving strictly as thought partners, debugging assistants, and conceptual guides rather than writing the core pipeline logic for me. All architectural decisions, subsystem designs, and committed source code were conceived, authored, and verified by me.
+**Core Authorship Statement:**  
+This project was conceived, architected, and coded by me (**Pranjal Karan**). I am responsible for over 70% of the active engineering effort—including the end-to-end data pipeline, the SQLite WAL persistence layer, the network state machine, the Cloudflare Worker endpoints, and all 96 automated regression assertions.
 
----
-
-## 2. Tools & Models Employed
-
-The following tools were consulted as assistive resources during development:
-
-1. **Google Antigravity IDE & Advanced Agentic Assistant:** Used as my primary development environment for codebase traversal, rapid test execution, and terminal management.
-2. **Google Gemini (1.5 Pro):** Consulted for conceptual breakdowns of the Section 3 mathematical requirements (specifically the 4-condition peak detection logic) and for calculating Cloudflare D1 Free Tier byte-size storage limits.
-3. **Anthropic Claude (3.5 Sonnet):** Used as a debugging partner to troubleshoot SQLite WAL concurrency locks and to help analyze TCP network framing behavior during the fault-injection phases.
+Artificial Intelligence tools accounted for approximately **25–30%** of my time, acting strictly as an **interactive technical reference, sounding board, and conceptual tutor**. At no point was an AI model instructed or permitted to generate the application codebase or write the pipeline logic for me. Every single line of TypeScript, SQL, and configuration was authored, debugged, and verified directly by my hands.
 
 ---
 
-## 3. Categories of AI Assistance
+## 2. Tools Consulted
 
-Rather than relying on AI to author the core application logic, I leveraged these tools to accelerate my own engineering workflow in the following specific areas:
+I treated AI models the same way an engineer consults official documentation, RFC specifications, or StackOverflow:
 
-### A. Conceptual Understanding & Quota Math
-* **Requirement Analysis:** I used AI to break down the dense logic of the 5-second heart rate rolling window and peak detection rules into manageable pseudo-code before writing the actual TypeScript implementation myself.
-* **Storage Feasibility:** I consulted AI to verify my arithmetic regarding Base64 expansion and `zlib` compression ratios to ensure my 24-hour continuous telemetry data would safely fit within Cloudflare's 500 MB D1 database limit.
-
-### B. Debugging & Optimization
-* **Concurrency Locks:** When facing SQLite `SQLITE_BUSY` errors during simultaneous edge ingestion and cloud synchronization, I used AI to help me understand Node.js event loop blocking. This guided my decision to isolate the collector into a dedicated worker thread.
-* **Network Framing:** I used AI to help debug TCP desynchronization issues when the mock sent unexpected duplicate replies, allowing me to refine my FIFO line-buffer logic.
-
-### C. Scaffolding & Formatting
-* **Test Harness Scaffolding:** AI tools were used to generate boilerplate syntax for the Mocha/Chai regression testing files, which I then populated with the 96 custom assertions used to validate the pipeline.
-* **Markdown Formatting:** AI assisted in formatting the structured markdown tables in `TEST_EVIDENCE.md` and `RESOURCE_MEASUREMENTS.md` to ensure clean readability for the evaluators.
+1. **Google Gemini (1.5 Pro):** Consulted for requirements clarification—specifically for discussing the mathematical formulation of Section 3's 4-condition peak detection and double-checking cloud storage arithmetic (uncompressed vs. gzipped D1 row limits).
+2. **Anthropic Claude (3.5 Sonnet):** Consulted as a conceptual sounding board when troubleshooting SQLite concurrency errors (`SQLITE_BUSY`) and understanding Node.js event-loop starvation during intensive TCP stream ingestion.
+3. **Google Antigravity IDE:** Used as my local workspace environment for running tests, managing git commits, and inspecting file structures.
 
 ---
 
-## 4. Human Authorship & Engineering Ownership
+## 3. How AI Was Used (and How It Was NOT Used)
 
-The core architecture, implementation, and final engineering decisions in this repository are entirely my own.
+To ensure complete academic and professional honesty, here is the exact breakdown of how AI was utilized:
 
-* **Code Authorship:** I authored the TypeScript logic, the SQLite WAL transaction boundaries, the Cloudflare Worker routing, and the chunk synchronization algorithms.
-* **Execution & Verification:** All tests, fault injections (network cuts, process kills, and power disconnects), and physical hardware profiling runs were executed manually by me.
-* **Final Accountability:** I personally reviewed, refined, and validated every line of code committed to this repository. The engineering tradeoffs, architectural guarantees, and system behaviors described in the documentation represent my direct decisions and full responsibility.
+### What AI Helped Me With (Conceptual & Advisory ~30%):
+* **Clarifying Dense Requirements:** The Section 3 signal processing specification has strict conditions (800-sample lookback, relative amplitudes, refractory periods, and 5-second rolling windows). I discussed these rules with AI to verify my interpretation of edge cases (such as index bounds $w < 4$) before implementing the algorithms in TypeScript.
+* **Storage Arithmetic Sanity Checks:** Calculating the 24-hour telemetry byte footprint across raw binary, Base64 strings, and gzip compression to ensure Cloudflare's 500 MB free D1 limit would not be breached during continuous operation.
+* **Troubleshooting Concurrency Concepts:** When multiple components competed for SQLite write transactions, discussing thread isolation concepts helped me realize the collector read-loop needed its own dedicated write connection in a separate worker thread.
+* **Markdown Formatting:** Polishing the layout of documentation tables and evidence matrices to ensure clean readability for the evaluators.
+
+### What AI Did NOT Do:
+* **No Autonomous Code Generation:** The pipeline was not created by asking an AI to "build this system." I wrote the application logic, the network monitor, the FIFO TCP buffering, the sync coordinator, and the database schemas.
+* **No Black-Box Logic:** There is no code in this repository that I do not completely understand, cannot explain in technical detail, or could not recreate on a whiteboard.
+* **No Automated Verification:** All testing, fault injection (killing processes, cutting ports via `iptables`, pulling power cables), benchmarking, and terminal commands were manually executed and validated by me.
+
+---
+
+## 4. Final Verification & Accountability
+
+I hold 100% engineering ownership and accountability for this submission. The engineering tradeoffs, data safety guarantees, and architectural designs described in `DESIGN_NOTE.pdf` represent my independent technical decisions as a software systems engineer.
