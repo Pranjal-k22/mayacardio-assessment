@@ -1,0 +1,36 @@
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Environment and secrets
+.env*
+!.env.example
+
+# Databases and test data
+*.db
+*.db-wal
+*.db-shm
+pipeline.db*
+measurements/
+data/
+test_data/
+*.ndjson
+powercut_log.csv
+netcut_*.csv
+killloop_*.csv
+measure_*.json
+
+# Cloudflare Wrangler
+.wrangler/
+.mf/
+
+# Scratch and Agent IDE artifacts
+scratch/
+.agents/
+.antigravity/
+
+# OS and Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

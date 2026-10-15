@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mayacardio-cloud-pipeline",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mayacardio-production",
+      "database_id": "26c77bf1-3b53-4cd3-abae-e5e656f1d97f"
+    }
+  ]
+}
