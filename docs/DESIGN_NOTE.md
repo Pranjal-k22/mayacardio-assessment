@@ -5,7 +5,7 @@
 ---
 
 ### 1. Architecture & System Overview
-MayaCardio implements an unattended bedside biosignal telemetry pipeline on a Raspberry Pi-class board (ARM64, $\le 4$ cores, 2 GB RAM) and free cloud services (Cloudflare Workers + D1). The system continuously ingests two biosensors at 400 samples/sec (Sensor 1: 3 channels, Sensor 2: 2 channels), persists all data crash-safely, computes authoritative 1-second window analytics, and synchronizes backlogs idempotently without data loss.
+MayaCardio implements an unattended bedside biosignal telemetry pipeline on a Raspberry Pi-class environment (ARM64, $\le 4$ cores, 2 GB RAM) and free cloud services (Cloudflare Workers + D1). In 1-hour continuous online profiling under ARM64 limits, the pipeline recorded: 28.90% average CPU, 370.07 MB peak memory (RSS), 157.80 MB disk written, and 74.04 MB network sent. The system continuously ingests two biosensors at 400 samples/sec (Sensor 1: 3 channels, Sensor 2: 2 channels), persists all data crash-safely, computes authoritative 1-second window analytics, and synchronizes backlogs idempotently without data loss.
 
 *Core Engineering Decisions:*
 * **Language & Runtime:** TypeScript on Node.js v22+ LTS with native `node:sqlite` WAL mode for zero external runtime dependencies and deterministic execution.
@@ -78,4 +78,5 @@ graph LR
 | **Collector Starvation Avoidance** | **PASS (Max gap 398 ms)** | Dedicated collector worker; P99 commit = 3 ms (N=115,218, Max=124ms) across 300.25s continuous 400 Hz test with 2-hour catch-up. |
 | **Export Order & Parity** | **PASS (100% Bit-for-bit)** | Cloud export buffers losses and streams samples first; line-for-line parity verified across 2,904 lines. |
 | **Section 6.1 Math Parity** | **PASS (100% Bit-for-bit)** | Standalone `tools/check_ground_truth.ts` verifies device/cloud NDJSON exports against Section 6.1 modulo recurrence. |
+| **1-Hour Resource Limits** | **PASS (ARM64 4-Core / 2GB)** | Avg CPU: 28.90%, Peak RSS: 370.07 MB, Disk Written: 157.80 MB, Network Sent: 74.04 MB in 1h online container run. |
 

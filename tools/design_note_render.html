@@ -91,7 +91,7 @@ strong {
 <p><strong>Author:</strong> Pranjal Karan | <strong>Scope:</strong> Edge Ingestion, Local Durability & Cloud Sync | <strong>Constraint:</strong> Max 2 Pages</p>
 <hr/>
 <h3>1. Architecture & System Overview</h3>
-<p>MayaCardio implements an unattended bedside biosignal telemetry pipeline on a Raspberry Pi-class board (ARM64, ≤ 4 cores, 2 GB RAM) and free cloud services (Cloudflare Workers + D1). The system continuously ingests two biosensors at 400 samples/sec (Sensor 1: 3 channels, Sensor 2: 2 channels), persists all data crash-safely, computes authoritative 1-second window analytics, and synchronizes backlogs idempotently without data loss.</p>
+<p>MayaCardio implements an unattended bedside biosignal telemetry pipeline on a Raspberry Pi-class environment (ARM64, ≤ 4 cores, 2 GB RAM) and free cloud services (Cloudflare Workers + D1). In 1-hour continuous online profiling under ARM64 limits, the pipeline recorded: 28.90% average CPU, 370.07 MB peak memory (RSS), 157.80 MB disk written, and 74.04 MB network sent. The system continuously ingests two biosensors at 400 samples/sec (Sensor 1: 3 channels, Sensor 2: 2 channels), persists all data crash-safely, computes authoritative 1-second window analytics, and synchronizes backlogs idempotently without data loss.</p>
 <p><em>Core Engineering Decisions:</em></p>
 <li><strong>Language & Runtime:</strong> TypeScript on Node.js v22+ LTS with native <code>node:sqlite</code> WAL mode for zero external runtime dependencies and deterministic execution.</li>
 <li><strong>Collector Isolation (FIX 1):</strong> Ingestion runs in an isolated thread/worker owning write connections, decoupled from backlog upload and window processing, keeping read gaps ≤ 398\,\text{ms} (\ll 2000\,\text{ms} ceiling) during 5-minute continuous streaming at sustained 400 Hz.</li>
@@ -188,6 +188,7 @@ strong {
 <tr><td><strong>Collector Starvation Avoidance</strong></td><td><strong>PASS (Max gap 398 ms)</strong></td><td>Dedicated collector worker; P99 commit = 3 ms (N=115,218, Max=124ms) across 300.25s continuous 400 Hz test with 2-hour catch-up.</td></tr>
 <tr><td><strong>Export Order & Parity</strong></td><td><strong>PASS (100% Bit-for-bit)</strong></td><td>Cloud export buffers losses and streams samples first; line-for-line parity verified across 2,904 lines.</td></tr>
 <tr><td><strong>Section 6.1 Math Parity</strong></td><td><strong>PASS (100% Bit-for-bit)</strong></td><td>Standalone <code>tools/check_ground_truth.ts</code> verifies device/cloud NDJSON exports against Section 6.1 modulo recurrence.</td></tr>
+<tr><td><strong>1-Hour Resource Limits</strong></td><td><strong>PASS (ARM64 4-Core / 2GB)</strong></td><td>Avg CPU: 28.90%, Peak RSS: 370.07 MB, Disk Written: 157.80 MB, Network Sent: 74.04 MB in 1h online container run.</td></tr>
 </table>
 </body>
 </html>

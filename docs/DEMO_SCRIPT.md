@@ -118,14 +118,25 @@
 ---
 
 ### [3:15 – 4:15] Mandatory Fault 3: Sudden Power Cut & Mock Restart (Section 5 Item 5)
-* **Visual:** Abruptly pull power from the device (or execute `docker kill -s SIGKILL` on the test container). Boot up, restart the mock and pipeline, and demonstrate loss handling.
+* **Visual:** Abruptly terminate power to the edge node. For Docker ARM64 container evaluation, issue `docker kill --signal=SIGKILL mayacardio-edge` from the host to simulate an instantaneous hardware 5V drop; on physical Pi, pull the 5V USB-C power cable. Restart container/board, start mock and pipeline, and verify loss handling.
+* **Terminal 3 / Host Shell (Right Panel):**
+  ```bash
+  # Simulate abrupt hardware power cut (instant termination with zero shutdown hooks):
+  # Option A (Docker Container):
+  docker kill --signal=SIGKILL mayacardio-edge
+  docker start mayacardio-edge
+  docker exec -it mayacardio-edge bash
+
+  # Option B (Inside container / board process-level simulation):
+  kill -9 $(pgrep -f "pipeline.ts") $(pgrep -f "biosignal_mock.ts")
+  ```
 * **Speaker:**
   > "Third mandatory fault: sudden power cut.
-  > On a bedside device, sudden power loss means both the pipeline and the sensor mock lose power simultaneously.
-  > Under `PRAGMA synchronous = FULL;`, every committed transaction is already flushed to non-volatile storage, bounding power-cut data loss strictly to the uncommitted batch window (at most 0.5 to 1.0 seconds)."
+  > On an unattended bedside device, sudden power loss means both the pipeline and the sensor mock lose power simultaneously with zero OS shutdown warnings.
+  > Under `PRAGMA synchronous = FULL;`, every committed transaction is already flushed to durable storage, bounding power-cut data loss strictly to the uncommitted batch window (at most 0.5 to 1.0 seconds)."
 * **Terminal 3 (Right Panel):**
   ```bash
-  # System reboots. Mock starts afresh, creating a new session ID with indices starting from 0.
+  # Edge boots up. Mock starts afresh, creating a new session ID with indices starting from 0.
   node --experimental-strip-types tools/biosignal_mock.ts --mode ramp --duration 3600 --port 7100 &
   ./pipeline start --port 7100 --db pipeline.db &
   sleep 3
